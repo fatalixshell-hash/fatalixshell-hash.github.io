@@ -3,32 +3,66 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Мой сайт</title>
+    <title>Мониторинг Minecraft сервера</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: linear-gradient(to bottom, #1e3c72, #2a5298);
-            color: white;
-            text-align: center;
-            margin: 0;
-            padding: 100px 20px;
-        }
-        h1 {
-            font-size: 50px;
-            margin-bottom: 20px;
-        }
-        p {
-            font-size: 24px;
-        }
-        a {
-            color: #00ff00;
-            text-decoration: none;
-        }
+        body { font-family: Arial, sans-serif; background: #121212; color: #fff; text-align: center; padding: 50px; }
+        .container { max-width: 800px; margin: 0 auto; background: #1e1e1e; padding: 30px; border-radius: 15px; }
+        .status-online { color: #00ff00; }
+        .status-offline { color: #ff0000; }
+        .players { margin: 20px 0; font-size: 18px; }
+        #player-list { margin-top: 20px; padding: 15px; background: #2d2d2d; border-radius: 10px; text-align: left; display: inline-block; }
+        h1 { color: #7289da; }
+        button { padding: 10px 20px; font-size: 16px; background: #7289da; color: white; border: none; border-radius: 5px; cursor: pointer; margin: 10px; }
+        button:hover { background: #5a6eb8; }
     </style>
 </head>
 <body>
-    <h1>Привет! Это мой сайт</h1>
-    <p>Сделано на GitHub Pages 🔥</p>
-    <p>Мой GitHub: <a href="https://github.com/fatalixshell-hash" target="_blank">fatalixshell-hash</a></p>
+    <div class="container">
+        <h1>Мониторинг сервера Minecraft</h1>
+        <p>IP: <strong>49.12.82.39:25597</strong></p>
+        <div id="status">Проверка статуса...</div>
+        <div id="players" class="players"></div>
+        <div id="player-list"></div>
+        <br>
+        <button onclick="updateStatus()">Обновить статус</button>
+    </div>
+
+    <script>
+        function updateStatus() {
+            document.getElementById('status').innerHTML = 'Проверка...';
+            document.getElementById('players').innerHTML = '';
+            document.getElementById('player-list').innerHTML = '';
+
+            fetch('status.php')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.online) {
+                        document.getElementById('status').innerHTML = '<span class="status-online">● Сервер онлайн</span>';
+                        document.getElementById('status').className = 'status-online';
+                        document.getElementById('players').innerHTML = `Игроков онлайн: <strong>${data.players.online}/${data.players.max}</strong>`;
+                        
+                        if (data.players.list.length > 0) {
+                            let list = '<strong>Игроки на сервере:</strong><br>';
+                            data.players.list.forEach(player => {
+                                list += '• ' + player + '<br>';
+                            });
+                            document.getElementById('player-list').innerHTML = list;
+                        } else {
+                            document.getElementById('player-list').innerHTML = 'Игроков нет';
+                        }
+                    } else {
+                        document.getElementById('status').innerHTML = '<span class="status-offline">● Сервер оффлайн</span>';
+                        document.getElementById('players').innerHTML = 'Сервер недоступен';
+                    }
+                })
+                .catch(err => {
+                    document.getElementById('status').innerHTML = '<span class="status-offline">● Ошибка подключения</span>';
+                });
+        }
+
+        // Автообновление каждые 30 секунд
+        updateStatus();
+        setInterval(updateStatus, 30000);
+    </script>
 </body>
 </html>
