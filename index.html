@@ -3,66 +3,113 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Мониторинг Minecraft сервера</title>
+    <title>Пропал человек — Иван Сергеевич Морозов</title>
     <style>
-        body { font-family: Arial, sans-serif; background: #121212; color: #fff; text-align: center; padding: 50px; }
-        .container { max-width: 800px; margin: 0 auto; background: #1e1e1e; padding: 30px; border-radius: 15px; }
-        .status-online { color: #00ff00; }
-        .status-offline { color: #ff0000; }
-        .players { margin: 20px 0; font-size: 18px; }
-        #player-list { margin-top: 20px; padding: 15px; background: #2d2d2d; border-radius: 10px; text-align: left; display: inline-block; }
-        h1 { color: #7289da; }
-        button { padding: 10px 20px; font-size: 16px; background: #7289da; color: white; border: none; border-radius: 5px; cursor: pointer; margin: 10px; }
-        button:hover { background: #5a6eb8; }
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f4f4;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+        header {
+            background: #b30000;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        .container {
+            max-width: 900px;
+            margin: 30px auto;
+            background: white;
+            padding: 30px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        img {
+            max-width: 100%;
+            border: 3px solid #ccc;
+        }
+        .hidden {
+            display: none;
+        }
+        .clue {
+            color: #660000;
+            font-style: italic;
+            margin-top: 30px;
+        }
+        footer {
+            text-align: center;
+            padding: 20px;
+            background: #333;
+            color: white;
+            margin-top: 50px;
+        }
+        /* Пасхалка: при наведении на фото появляется текст */
+        #photo:hover + .hidden {
+            display: block;
+            color: red;
+            font-size: 20px;
+            position: absolute;
+            background: rgba(0,0,0,0.7);
+            padding: 10px;
+        }
     </style>
 </head>
 <body>
+    <header>
+        <h1>РОЗЫСК: ПРОПАЛ ЧЕЛОВЕК</h1>
+        <h2>Иван Сергеевич Морозов</h2>
+    </header>
+
     <div class="container">
-        <h1>Мониторинг сервера Minecraft</h1>
-        <p>IP: <strong>49.12.82.39:25597</strong></p>
-        <div id="status">Проверка статуса...</div>
-        <div id="players" class="players"></div>
-        <div id="player-list"></div>
-        <br>
-        <button onclick="updateStatus()">Обновить статус</button>
+        <h2>Последний раз видели: 23 декабря 2025 года</h2>
+        
+        <p><strong>Дата рождения:</strong> 14 марта 1987 года (38 лет)<br>
+        <strong>Рост:</strong> 178 см<br>
+        <strong>Телосложение:</strong> среднее<br>
+        <strong>Цвет волос:</strong> тёмно-русые<br>
+        <strong>Особые приметы:</strong> шрам на левой кисти, носит очки в тонкой оправе</p>
+
+        <p style="text-align: center;">
+            <img src="https://via.placeholder.com/400x600?text=Фото+Ивана+Морозова" alt="Фото пропавшего" id="photo">
+        </p>
+
+        <div class="hidden">Координаты: 55.751244, 37.618423 — проверь карту в полночь</div>
+
+        <h3>Обстоятельства исчезновения</h3>
+        <p>Иван Сергеевич вышел из дома в районе Хамовники (Москва) примерно в 19:30 23 декабря 2025 года. Сказал родственникам, что идёт на встречу с давним знакомым. Телефон перестал отвечать после 21:12. Последняя геолокация — район метро Фрунзенская.</p>
+
+        <p>Был одет: чёрная куртка, тёмные джинсы, серый шарф.</p>
+
+        <div class="clue">
+            Если вы что-то знаете — звоните: +7 (999) 123-45-67<br>
+            Или пишите: find.ivan2025@mail.ru
+        </div>
+
+        <h3>Просьба ко всем</h3>
+        <p>Если вы видели этого человека или обладаете любой информацией, пожалуйста, свяжитесь с нами. Даже самая маленькая деталь может помочь.</p>
+
+        <!-- Скрытая пасхалка в исходном коде -->
+        <!-- ARG_CLUE_01: base64: S2V5OiAi0J/RgNC40LLQtdGCIngwNTQyIg== -->
     </div>
 
+    <footer>
+        <p>Сайт создан родственниками и друзьями Ивана Морозова © 2026</p>
+        <p style="font-size: 12px; color: #aaa;">Последнее обновление: 08 января 2026</p>
+    </footer>
+
     <script>
-        function updateStatus() {
-            document.getElementById('status').innerHTML = 'Проверка...';
-            document.getElementById('players').innerHTML = '';
-            document.getElementById('player-list').innerHTML = '';
-
-            fetch('status.php')
-                .then(response => response.json())
-                .then(data => {
-                    if (data.online) {
-                        document.getElementById('status').innerHTML = '<span class="status-online">● Сервер онлайн</span>';
-                        document.getElementById('status').className = 'status-online';
-                        document.getElementById('players').innerHTML = `Игроков онлайн: <strong>${data.players.online}/${data.players.max}</strong>`;
-                        
-                        if (data.players.list.length > 0) {
-                            let list = '<strong>Игроки на сервере:</strong><br>';
-                            data.players.list.forEach(player => {
-                                list += '• ' + player + '<br>';
-                            });
-                            document.getElementById('player-list').innerHTML = list;
-                        } else {
-                            document.getElementById('player-list').innerHTML = 'Игроков нет';
-                        }
-                    } else {
-                        document.getElementById('status').innerHTML = '<span class="status-offline">● Сервер оффлайн</span>';
-                        document.getElementById('players').innerHTML = 'Сервер недоступен';
-                    }
-                })
-                .catch(err => {
-                    document.getElementById('status').innerHTML = '<span class="status-offline">● Ошибка подключения</span>';
-                });
-        }
-
-        // Автообновление каждые 30 секунд
-        updateStatus();
-        setInterval(updateStatus, 30000);
+        // Ещё одна пасхалка: при нажатии Konami Code появляется сообщение
+        let keys = [];
+        const code = '38,38,40,40,37,39,37,39,66,65';
+        document.addEventListener('keydown', function(e) {
+            keys.push(e.keyCode);
+            if (keys.toString().indexOf(code) >= 0) {
+                alert('Ты нашёл подсказку!\n\n"Он не пропал. Он ушёл туда, куда смотрел слишком долго."');
+                keys = [];
+            }
+        });
     </script>
 </body>
 </html>
